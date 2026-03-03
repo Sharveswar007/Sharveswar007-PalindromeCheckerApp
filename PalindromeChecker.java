@@ -1,74 +1,88 @@
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 /**
- * UC5 - Stack-Based Palindrome Checker
+ * UC6 - Queue + Stack Based Palindrome Check
  * 
- * Goal: Use a Stack to reverse characters and validate palindrome.
+ * Goal: Demonstrate FIFO vs LIFO using Queue and Stack to validate a palindrome.
  * 
  * Key Concepts:
- * - Stack: A linear data structure that follows Last In First Out (LIFO) principle.
- * - Push Operation: Inserts characters into the stack.
- * - Pop Operation: Removes characters from the stack in reverse order.
- * - Reversal Logic: Stack naturally reverses the order of elements.
+ * - Queue: A linear data structure that follows First In First Out (FIFO) principle.
+ * - Enqueue & Dequeue Operations: Insert and remove elements from the queue.
+ * - Stack vs Queue: Demonstrates the behavioural difference between LIFO and FIFO.
+ * - Logical Comparison: Matching dequeue (Queue) output with pop (Stack) output to validate palindrome.
  * 
- * Data Structure: Stack
+ * Data Structures: Queue, Stack
  */
 public class PalindromeChecker {
 
     public static void main(String[] args) {
         System.out.println("=========================================");
-        System.out.println("   Palindrome Checker - UC5");
-        System.out.println("   Stack-Based Approach (LIFO)");
+        System.out.println("   Palindrome Checker - UC6");
+        System.out.println("   Queue + Stack Approach (FIFO vs LIFO)");
         System.out.println("=========================================");
 
-        String word = "madam";
+        String word = "racecar";
         System.out.println("Checking word: \"" + word + "\"");
 
-        // Create a Stack to hold characters
+        // Create a Queue (FIFO) and a Stack (LIFO)
+        Queue<Character> queue = new LinkedList<>();
         Stack<Character> stack = new Stack<>();
 
-        // Push each character of the string onto the stack
-        System.out.println("\n--- Pushing characters onto Stack ---");
+        // Enqueue characters into Queue and Push characters into Stack
+        System.out.println("\n--- Loading characters into Queue (FIFO) and Stack (LIFO) ---");
         for (int i = 0; i < word.length(); i++) {
-            stack.push(word.charAt(i));
-            System.out.println("  Pushed: '" + word.charAt(i) + "' -> Stack: " + stack);
+            char ch = word.charAt(i);
+            queue.add(ch);       // Enqueue - adds to the rear
+            stack.push(ch);      // Push - adds to the top
+            System.out.println("  Added '" + ch + "' -> Queue: " + queue + " | Stack: " + stack);
         }
 
-        // Pop characters and build the reversed string
-        System.out.println("\n--- Popping characters from Stack ---");
-        String reversed = "";
-        for (int i = 0; i < word.length(); i++) {
-            char popped = stack.pop();
-            reversed = reversed + popped;
-            System.out.println("  Popped: '" + popped + "' -> Reversed so far: \"" + reversed + "\"");
+        // Compare: Dequeue from Queue (FIFO order) vs Pop from Stack (LIFO order)
+        System.out.println("\n--- Comparing Queue (FIFO) vs Stack (LIFO) ---");
+        boolean isPalindrome = true;
+
+        while (!queue.isEmpty() && !stack.isEmpty()) {
+            char fromQueue = queue.poll();   // Dequeue - removes from the front (FIFO)
+            char fromStack = stack.pop();    // Pop - removes from the top (LIFO)
+
+            System.out.println("  Queue (front): '" + fromQueue + "' vs Stack (top): '" + fromStack + "'"
+                             + (fromQueue == fromStack ? " -> MATCH" : " -> MISMATCH"));
+
+            if (fromQueue != fromStack) {
+                isPalindrome = false;
+                break;
+            }
         }
 
-        // Compare original with reversed
-        System.out.println("\nOriginal: \"" + word + "\"");
-        System.out.println("Reversed: \"" + reversed + "\"");
-
-        if (word.equals(reversed)) {
+        // Display result
+        System.out.println();
+        if (isPalindrome) {
             System.out.println("Result: \"" + word + "\" IS a Palindrome!");
+            System.out.println("Explanation: FIFO order matches LIFO order, confirming palindrome.");
         } else {
             System.out.println("Result: \"" + word + "\" is NOT a Palindrome.");
+            System.out.println("Explanation: FIFO order does NOT match LIFO order.");
         }
 
         // Test with a non-palindrome
-        System.out.println("\n--- Testing with \"stack\" ---");
-        String word2 = "stack";
-        Stack<Character> stack2 = new Stack<>();
+        System.out.println("\n--- Testing with \"queue\" ---");
+        String word2 = "queue";
+        Queue<Character> q2 = new LinkedList<>();
+        Stack<Character> s2 = new Stack<>();
         for (int i = 0; i < word2.length(); i++) {
-            stack2.push(word2.charAt(i));
+            q2.add(word2.charAt(i));
+            s2.push(word2.charAt(i));
         }
-        String reversed2 = "";
-        while (!stack2.isEmpty()) {
-            reversed2 = reversed2 + stack2.pop();
+        boolean isPalin2 = true;
+        while (!q2.isEmpty() && !s2.isEmpty()) {
+            if (q2.poll() != s2.pop()) {
+                isPalin2 = false;
+                break;
+            }
         }
-        if (word2.equals(reversed2)) {
-            System.out.println("Result: \"" + word2 + "\" IS a Palindrome!");
-        } else {
-            System.out.println("Result: \"" + word2 + "\" is NOT a Palindrome.");
-        }
+        System.out.println("Result: \"" + word2 + "\" " + (isPalin2 ? "IS" : "is NOT") + " a Palindrome.");
 
         System.out.println("\nProgram exiting...");
     }
