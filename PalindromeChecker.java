@@ -1,73 +1,122 @@
+import java.util.Stack;
+
 /**
- * UC10 - Case-Insensitive & Space-Ignored Palindrome
+ * UC11 - Object-Oriented Palindrome Service
  * 
- * Goal: Ignore spaces, special characters, and case while checking a palindrome.
+ * Goal: Encapsulate palindrome logic in a class following OOP principles.
  * 
- * Key Concepts:
- * - String Pre-processing: Normalize the string before checking.
- * - Regular Expressions: Used to remove non-alphanumeric characters.
- * - toLowerCase(): Converts string to lowercase for case-insensitive comparison.
- * - replaceAll(): Uses regex to strip unwanted characters.
+ * Key Concepts (OOP):
+ * - Encapsulation: Bundling data and methods that operate on that data within a class.
+ *   The internal implementation is hidden; only checkPalindrome() is exposed.
+ * - Single Responsibility Principle: The PalindromeService class has one job - palindrome checking.
+ * - Private fields and methods: Internal state is not directly accessible from outside.
+ * - Constructor: Initializes the object with the input string.
  * 
- * Data Structure: String / char[]
+ * Data Structure: Internal (Stack / char[])
  */
 public class PalindromeChecker {
 
-    /**
-     * Normalize the input string:
-     * - Remove all non-alphanumeric characters using regex
-     * - Convert to lowercase for case-insensitive comparison
-     */
-    static String normalize(String input) {
-        // [^a-zA-Z0-9] matches any character that is NOT alphanumeric
-        String cleaned = input.replaceAll("[^a-zA-Z0-9]", "");
-        return cleaned.toLowerCase();
-    }
+    // =========================================================
+    // Inner class: PalindromeService (Encapsulated Palindrome Logic)
+    // =========================================================
+    static class PalindromeService {
 
-    /**
-     * Check palindrome using two-pointer technique on normalized string.
-     */
-    static boolean isPalindrome(String str) {
-        char[] chars = str.toCharArray();
-        int start = 0;
-        int end = chars.length - 1;
+        // Private field - encapsulated, not accessible from outside
+        private String input;
+        private String normalizedInput;
 
-        while (start < end) {
-            if (chars[start] != chars[end]) {
-                return false;
-            }
-            start++;
-            end--;
+        // Constructor - initializes the service with input string
+        public PalindromeService(String input) {
+            this.input = input;
+            this.normalizedInput = normalize(input);
         }
-        return true;
+
+        // Private method - internal implementation detail (encapsulation)
+        private String normalize(String str) {
+            return str.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+        }
+
+        // Private method - palindrome check using Stack (internal logic)
+        private boolean checkUsingStack() {
+            Stack<Character> stack = new Stack<>();
+
+            // Push all characters onto stack
+            for (int i = 0; i < normalizedInput.length(); i++) {
+                stack.push(normalizedInput.charAt(i));
+            }
+
+            // Pop and compare
+            for (int i = 0; i < normalizedInput.length(); i++) {
+                if (normalizedInput.charAt(i) != stack.pop()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Private method - palindrome check using two-pointer (internal logic)
+        private boolean checkUsingTwoPointer() {
+            char[] chars = normalizedInput.toCharArray();
+            int start = 0;
+            int end = chars.length - 1;
+
+            while (start < end) {
+                if (chars[start] != chars[end]) {
+                    return false;
+                }
+                start++;
+                end--;
+            }
+            return true;
+        }
+
+        // PUBLIC method - the only exposed API (Single Responsibility)
+        public boolean checkPalindrome() {
+            // Internally uses two-pointer approach (implementation can change
+            // without affecting the caller - this is encapsulation!)
+            return checkUsingTwoPointer();
+        }
+
+        // PUBLIC method - get the original input
+        public String getInput() {
+            return input;
+        }
+
+        // PUBLIC method - get the normalized input for display
+        public String getNormalizedInput() {
+            return normalizedInput;
+        }
     }
 
+    // =========================================================
+    // Main method - demonstrates OOP usage
+    // =========================================================
     public static void main(String[] args) {
         System.out.println("=========================================");
-        System.out.println("   Palindrome Checker - UC10");
-        System.out.println("   Case-Insensitive & Space-Ignored");
+        System.out.println("   Palindrome Checker - UC11");
+        System.out.println("   Object-Oriented Palindrome Service");
         System.out.println("=========================================");
 
-        // Test cases with spaces, mixed case, and special characters
+        // Test cases
         String[] testCases = {
-            "A man a plan a canal Panama",
+            "madam",
             "Race Car",
-            "Was it a car or a cat I saw?",
-            "No lemon, no melon",
+            "A man a plan a canal Panama",
             "Hello World",
-            "Madam, I'm Adam!"
+            "Was it a car or a cat I saw?"
         };
 
         for (String testCase : testCases) {
             System.out.println("\n--- Test ---");
-            System.out.println("Original:   \"" + testCase + "\"");
 
-            // Step 1: Normalize the string
-            String normalized = normalize(testCase);
-            System.out.println("Normalized: \"" + normalized + "\"");
+            // Create an instance of PalindromeService (Object creation)
+            PalindromeService service = new PalindromeService(testCase);
 
-            // Step 2: Check palindrome
-            boolean result = isPalindrome(normalized);
+            System.out.println("Original:   \"" + service.getInput() + "\"");
+            System.out.println("Normalized: \"" + service.getNormalizedInput() + "\"");
+
+            // Call the public method - caller doesn't know about internal implementation
+            boolean result = service.checkPalindrome();
 
             if (result) {
                 System.out.println("Result:     PALINDROME!");
@@ -76,12 +125,15 @@ public class PalindromeChecker {
             }
         }
 
-        // Demonstrate regex behavior
+        // OOP Concepts Summary
         System.out.println("\n=========================================");
-        System.out.println("Regex Explanation:");
-        System.out.println("  [^a-zA-Z0-9] -> Matches any non-alphanumeric character");
-        System.out.println("  replaceAll() -> Removes all matched characters");
-        System.out.println("  toLowerCase() -> Makes comparison case-insensitive");
+        System.out.println("OOP Concepts Demonstrated:");
+        System.out.println("  1. Encapsulation: Private fields (input, normalizedInput)");
+        System.out.println("     and private methods (normalize, checkUsingStack, etc.)");
+        System.out.println("     are hidden. Only checkPalindrome() is exposed.");
+        System.out.println("  2. Single Responsibility: PalindromeService does only");
+        System.out.println("     one thing - palindrome checking.");
+        System.out.println("  3. Constructor: Initializes the object state.");
         System.out.println("=========================================");
 
         System.out.println("\nProgram exiting...");
