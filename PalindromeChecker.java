@@ -1,37 +1,44 @@
 /**
- * UC1 - Application Entry & Welcome Message
+ * UC2 - Print a Hardcoded Palindrome Result
  * 
- * Goal: Display a welcome message and application information
- *       when the PalindromeChecker App starts.
+ * Goal: Display whether a hardcoded string is a palindrome.
  * 
  * Key Concepts:
- * - Class: Acts as a container for the Palindrome Checker application logic.
- * - Main Method: Entry point of the Java application (public static void main(String[] args)).
- * - Static Keyword: Allows the JVM to invoke main() without creating an object.
- * - Console Output: System.out.println() displays messages on the console.
- * - Application Flow Control: Defines startup behavior before palindrome processing begins.
+ * - Class: Even the simplest program must be written inside a class.
+ * - Main Method: Entry point (public static void main(String[] args)).
+ * - Static Keyword: Allows JVM to invoke main() without creating an object.
+ * - String: Built-in Java class to store and manipulate textual data.
+ * - String Literal: Text enclosed in double quotes, stored in the String constant pool.
+ * - Conditional Statement (if-else): Evaluates whether the string satisfies palindrome condition.
+ * - Console Output: System.out.println() displays the result.
  * 
- * Data Structure: None (Console based execution)
+ * Data Structure: String
  */
 public class PalindromeChecker {
 
     public static void main(String[] args) {
-        // Display application name
         System.out.println("=========================================");
-        System.out.println("   Welcome to Palindrome Checker App");
+        System.out.println("   Palindrome Checker - UC2");
+        System.out.println("   Hardcoded Palindrome Check");
         System.out.println("=========================================");
 
-        // Display application version
-        System.out.println("Version: 1.0.0");
-        System.out.println("Author: Sharveswar");
-        System.out.println();
+        // Hardcoded string to check
+        String word = "madam";
+        System.out.println("Checking word: \"" + word + "\"");
 
-        // Application information
-        System.out.println("This application checks whether a given string is a palindrome.");
-        System.out.println("A palindrome reads the same forward and backward.");
-        System.out.println();
+        // Reverse the string manually using charAt
+        String reversed = "";
+        for (int i = word.length() - 1; i >= 0; i--) {
+            reversed = reversed + word.charAt(i);
+        }
 
-        System.out.println("Application started successfully!");
-        System.out.println("Program exiting...");
+        // Check if the original string equals the reversed string
+        if (word.equals(reversed)) {
+            System.out.println("\"" + word + "\" is a Palindrome!");
+        } else {
+            System.out.println("\"" + word + "\" is NOT a Palindrome.");
+        }
+
+        System.out.println("\nProgram exiting...");
     }
 }
