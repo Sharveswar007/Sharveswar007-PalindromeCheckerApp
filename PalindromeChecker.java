@@ -1,84 +1,88 @@
 /**
- * UC9 - Recursive Palindrome Checker
+ * UC10 - Case-Insensitive & Space-Ignored Palindrome
  * 
- * Goal: Check palindrome using recursion.
+ * Goal: Ignore spaces, special characters, and case while checking a palindrome.
  * 
  * Key Concepts:
- * - Recursion: A technique where a method calls itself to solve smaller subproblems.
- * - Base Condition: Prevents infinite recursion and terminates the recursive calls.
- * - Call Stack: Memory structure used to manage method calls during recursion.
+ * - String Pre-processing: Normalize the string before checking.
+ * - Regular Expressions: Used to remove non-alphanumeric characters.
+ * - toLowerCase(): Converts string to lowercase for case-insensitive comparison.
+ * - replaceAll(): Uses regex to strip unwanted characters.
  * 
- * Data Structure: Call Stack (implicit)
+ * Data Structure: String / char[]
  */
 public class PalindromeChecker {
 
     /**
-     * Recursive method to check if a string is a palindrome.
-     * 
-     * @param str   The string to check
-     * @param start The starting index
-     * @param end   The ending index
-     * @param depth The recursion depth (for visualization)
-     * @return true if the string is a palindrome
+     * Normalize the input string:
+     * - Remove all non-alphanumeric characters using regex
+     * - Convert to lowercase for case-insensitive comparison
      */
-    static boolean isPalindromeRecursive(String str, int start, int end, int depth) {
-        // Indentation for visualizing recursion depth
-        String indent = "  ".repeat(depth);
+    static String normalize(String input) {
+        // [^a-zA-Z0-9] matches any character that is NOT alphanumeric
+        String cleaned = input.replaceAll("[^a-zA-Z0-9]", "");
+        return cleaned.toLowerCase();
+    }
 
-        // Base Condition 1: If start crosses end, all characters matched
-        if (start >= end) {
-            System.out.println(indent + "Base case reached: start(" + start + ") >= end(" + end + ") -> TRUE");
-            return true;
+    /**
+     * Check palindrome using two-pointer technique on normalized string.
+     */
+    static boolean isPalindrome(String str) {
+        char[] chars = str.toCharArray();
+        int start = 0;
+        int end = chars.length - 1;
+
+        while (start < end) {
+            if (chars[start] != chars[end]) {
+                return false;
+            }
+            start++;
+            end--;
         }
-
-        System.out.println(indent + "Comparing str[" + start + "]='" + str.charAt(start) 
-                         + "' with str[" + end + "]='" + str.charAt(end) + "'");
-
-        // If characters at start and end don't match, it's not a palindrome
-        if (str.charAt(start) != str.charAt(end)) {
-            System.out.println(indent + "MISMATCH -> FALSE");
-            return false;
-        }
-
-        System.out.println(indent + "MATCH -> Recursing deeper...");
-
-        // Recursive call: move start forward and end backward
-        return isPalindromeRecursive(str, start + 1, end - 1, depth + 1);
+        return true;
     }
 
     public static void main(String[] args) {
         System.out.println("=========================================");
-        System.out.println("   Palindrome Checker - UC9");
-        System.out.println("   Recursive Approach");
+        System.out.println("   Palindrome Checker - UC10");
+        System.out.println("   Case-Insensitive & Space-Ignored");
         System.out.println("=========================================");
 
-        String word = "racecar";
-        System.out.println("Checking word: \"" + word + "\"");
+        // Test cases with spaces, mixed case, and special characters
+        String[] testCases = {
+            "A man a plan a canal Panama",
+            "Race Car",
+            "Was it a car or a cat I saw?",
+            "No lemon, no melon",
+            "Hello World",
+            "Madam, I'm Adam!"
+        };
 
-        System.out.println("\n--- Recursive Call Trace ---");
-        boolean result = isPalindromeRecursive(word, 0, word.length() - 1, 0);
+        for (String testCase : testCases) {
+            System.out.println("\n--- Test ---");
+            System.out.println("Original:   \"" + testCase + "\"");
 
-        System.out.println();
-        if (result) {
-            System.out.println("Result: \"" + word + "\" IS a Palindrome!");
-        } else {
-            System.out.println("Result: \"" + word + "\" is NOT a Palindrome.");
+            // Step 1: Normalize the string
+            String normalized = normalize(testCase);
+            System.out.println("Normalized: \"" + normalized + "\"");
+
+            // Step 2: Check palindrome
+            boolean result = isPalindrome(normalized);
+
+            if (result) {
+                System.out.println("Result:     PALINDROME!");
+            } else {
+                System.out.println("Result:     NOT a palindrome.");
+            }
         }
 
-        // Demonstrate the call stack concept
-        System.out.println("\n--- Call Stack Visualization ---");
-        System.out.println("Each recursive call adds a new frame to the call stack:");
-        System.out.println("  main() -> isPalindromeRecursive(0,6)");
-        System.out.println("              -> isPalindromeRecursive(1,5)");
-        System.out.println("                   -> isPalindromeRecursive(2,4)");
-        System.out.println("                        -> isPalindromeRecursive(3,3) [Base Case]");
-        System.out.println("As each call returns, frames are removed from the stack (LIFO).");
-
-        // Test with a non-palindrome
-        System.out.println("\n--- Testing with \"recursion\" ---");
-        String word2 = "recursion";
-        boolean result2 = isPalindromeRecursive(word2, 0, word2.length() - 1, 0);
-        System.out.println("Result: \"" + word2 + "\" " + (result2 ? "IS" : "is NOT") + " a Palindrome.");
+        // Demonstrate regex behavior
+        System.out.println("\n=========================================");
+        System.out.println("Regex Explanation:");
+        System.out.println("  [^a-zA-Z0-9] -> Matches any non-alphanumeric character");
+        System.out.println("  replaceAll() -> Removes all matched characters");
+        System.out.println("  toLowerCase() -> Makes comparison case-insensitive");
+        System.out.println("=========================================");
 
         System.out.println("\nProgram exiting...");
     }
